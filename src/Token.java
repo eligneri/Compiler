@@ -26,6 +26,6 @@ public class Token{
     }
 
     public boolean equals(Token t){
-        return (this.key.equals(t.key) && this.value.equals(t.value)) || (this.key.equals(t.key) && this.intValue.equals(t.intValue));
+        return (this.key == t.key && this.value == t.value) || (this.key == t.key && this.intValue == t.intValue);
     }
 }

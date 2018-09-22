@@ -213,7 +213,7 @@ public class Lexer {
             }
             //of the form X.Ye(+/-)z
             if (c == 'e') {
-                exponent(c, value);
+                return(exponent(c, value));
             }
             goBack();
             return new Token("REALCONSTANT", value);
