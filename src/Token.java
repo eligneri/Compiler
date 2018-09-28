@@ -1,7 +1,7 @@
 public class Token{
-    String key;
-    String value;
-    Integer intValue;
+    private String key;
+    private String value;
+    private Integer intValue;
 
     public Token(String x, String y) {
         key = x;
@@ -27,5 +27,29 @@ public class Token{
 
     public boolean equals(Token t){
         return (this.key == t.key && this.value == t.value) || (this.key == t.key && this.intValue == t.intValue);
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public Integer getIntValue() {
+        return intValue;
+    }
+
+    public void setIntValue(Integer intValue) {
+        this.intValue = intValue;
     }
 }

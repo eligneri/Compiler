@@ -73,6 +73,7 @@ public class Lexer {
             x = reader.read();
         }
         input = input.toLowerCase();
+        reader.close();
     }
 
     //index keeps track of what point in the string we are
@@ -103,7 +104,7 @@ public class Lexer {
         Token token;
 
         //check to see if we have reached the end of the file
-        if(index >= input.length()-1){
+        if(index >= input.length()){
             return new Token("ENDOFFILE", null);
         }
 
@@ -111,7 +112,7 @@ public class Lexer {
 
         //scrolls over blanks
         while (isBlank(c)){
-            if(index >= input.length()-1){
+            if(index >= input.length()){
                 return new Token("ENDOFFILE", null);
             }
             c = getNextChar();
@@ -148,12 +149,13 @@ public class Lexer {
             output += c;
             c = getNextChar();
         }
+        goBack();
         //finds if identifier is a keyword or operator
         if(keywords.contains(output)){
-            goBack();
+            //goBack();
             return new Token(output.toUpperCase(), null);
         } else if(keyOps.contains(output)){
-            goBack();
+            //goBack();
             return opSelector(output);
         }
 
@@ -161,10 +163,10 @@ public class Lexer {
         else {
             try {
                 if (output.length() <= IDENTIFIER_MAX_LENGTH) {
-                    goBack();
+                   // goBack();
                     return new Token("IDENTIFIER", output);
                 } else {
-                    goBack();
+                    //goBack();
                     throw new LexicalError("Identifier exceeds maximum length of 32 chars: ");
                 }
             } catch (LexicalError e){
@@ -239,13 +241,13 @@ public class Lexer {
         try {
             switch (c) {
                 case '(':
-                    return new Token("LEFTPAREN", null);
+                    return new Token("LPAREN", null);
                 case ')':
-                    return new Token("RIGHTPAREN", null);
+                    return new Token("RPAREN", null);
                 case '[':
-                    return new Token("LEFTBRACKET", null);
+                    return new Token("LBRACKET", null);
                 case ']':
-                    return new Token("RIGHTBRACKET", null);
+                    return new Token("RBRACKET", null);
                 case ';':
                     return new Token("SEMICOLON", null);
                 case ':':
@@ -337,8 +339,9 @@ public class Lexer {
 
     //determines if the + and - symbols are ADDOP's or UNARYOP's
     private Token unaryOrAdd(char c){
-        if (previousToken.key == "RIGHTPAREN" || previousToken.key == "RIGHTBRACKET" || previousToken.key == "IDENTIFIER"
-                || previousToken.key == "INTCONSTANT" || previousToken.key == "REALCONSTANT") {
+        if (previousToken.getKey() == "RIGHTPAREN" || previousToken.getKey() == "RIGHTBRACKET" ||
+                previousToken.getKey() == "IDENTIFIER" || previousToken.getKey() == "INTCONSTANT" ||
+                previousToken.getKey() == "REALCONSTANT") {
             if(c == '+'){
                 return new Token("ADDOP",1);
             } else {
@@ -372,11 +375,15 @@ public class Lexer {
 
     //determines if a . indicates a double dot or not
     private boolean isDoubleDot(){
-        char c = getNextChar();
-        if (c == '.'){
-            return true;
+        if(index < input.length()) {
+            char c = getNextChar();
+            if (c == '.') {
+                return true;
+            } else {
+                goBack();
+                return false;
+            }
         } else {
-            goBack();
             return false;
         }
     }
