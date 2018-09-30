@@ -17,7 +17,6 @@ public class Grammar {
                 rules.add(new Rule(num,pro));
             }
             fileReader.close();
-            //System.out.println(rules.get(0));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }

@@ -14,19 +14,8 @@ public class Rule {
         production = j.trim();
     }
 
-    public int getLine() {
-        return line;
-    }
-
-    public void setLine(int line) {
-        this.line = line;
-    }
-
     public String getProduction() {
         return production;
     }
 
-    public void setProduction(String production) {
-        this.production = production;
-    }
 }

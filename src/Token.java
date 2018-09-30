@@ -2,15 +2,18 @@ public class Token{
     private String key;
     private String value;
     private Integer intValue;
+    private Integer line;
 
-    public Token(String x, String y) {
+    public Token(String x, String y, int z) {
         key = x;
         value = y;
+        line = z;
     }
 
-    public Token(String x, int y) {
+    public Token(String x, int y, int z) {
         key = x;
         intValue = y;
+        line = z;
     }
 
     @Override public String toString(){
@@ -29,27 +32,64 @@ public class Token{
         return (this.key == t.key && this.value == t.value) || (this.key == t.key && this.intValue == t.intValue);
     }
 
+    public String getSymbol(){
+        if(key == "IDENTIFIER" || key == "INTCONSTANT" || key == "REALCONSTANT"){
+            return value;
+        }else if(key == "ADDOP" || key == "MULOP" || key == "RELOP"){
+            return symbolLookUp();
+        }else{
+            return key;
+        }
+    }
+
+    private String symbolLookUp(){
+        if(key == "ADDOP"){
+            switch(intValue){
+                case 1:
+                    return "+";
+                case 2:
+                    return "-";
+                case 3:
+                    return "OR";
+            }
+        } else if(key == "MULOP"){
+            switch(intValue){
+                case 1:
+                    return "*";
+                case 2:
+                    return "/";
+                case 3:
+                    return "DIV";
+                case 4:
+                    return "MOD";
+                case 5:
+                    return "AND";
+            }
+        } else {
+            switch(intValue){
+                case 1:
+                    return "=";
+                case 2:
+                    return "<>";
+                case 3:
+                    return "<";
+                case 4:
+                    return ">";
+                case 5:
+                    return "<=";
+                case 6:
+                    return ">=";
+            }
+        }
+        return "Invalid Token Found";
+    }
+
     public String getKey() {
         return key;
     }
 
-    public void setKey(String key) {
-        this.key = key;
+    public Integer getLine() {
+        return line;
     }
 
-    public String getValue() {
-        return value;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
-    }
-
-    public Integer getIntValue() {
-        return intValue;
-    }
-
-    public void setIntValue(Integer intValue) {
-        this.intValue = intValue;
-    }
 }

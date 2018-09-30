@@ -16,35 +16,46 @@ public class Parser {
         stack.push("<Goal>");
     }
 
+    //Keeps track of how many steps the parse has taken
     private int step = 1;
 
     public void parse(){
-        String key = lex.getNextToken().getKey();
+        Token tok = lex.getNextToken();
+        String key = tok.getKey();
         while(!stack.isEmpty()){
-            if(verbose){
-                System.out.println("\n>>>  " + step + "  <<<\nStack ::==> " + dumpStack());
-            }
-            String stac = stack.peek();
-            if(key.equals(stac.toUpperCase())){
-                if(verbose){
-                    System.out.println("Popped " + stac + " with token " + key + " *MATCH* {consume token}");
+            try {
+                if (verbose) {
+                    System.out.println("\n>>>  " + step + "  <<<\nStack ::==> " + dumpStack());
                 }
-                stack.pop();
-                key = lex.getNextToken().getKey();
-            } else if(isNonTerminal(stac)){
-                if(verbose){
-                    System.out.print("Popped " + stac + "with token " + key + " *PUSH* ");
+                String stac = stack.peek();
+                if (key.equals(stac.toUpperCase())) {
+                    if (verbose) {
+                        System.out.println("Popped " + stac + " with token " + key + " *MATCH* {consume token}");
+                    }
+                    stack.pop();
+                    tok = lex.getNextToken();
+                    key = tok.getKey();
+                } else if (isNonTerminal(stac)) {
+                    if (verbose) {
+                        System.out.print("Popped " + stac + " with token " + key + " *PUSH* ");
+                    }
+                    int i = getRule(key, stac);
+                    if(i == 999){
+                        throw new ParseError("Invalid Symbol. Unexpected " + tok.getSymbol() + " on line " +
+                                tok.getLine());
+
+                    }
+                    stack.pop();
+                    stackAdd(i);
+                } else if (!isNonTerminal(stac)) {
+                    throw new ParseError("Invalid Symbol. Expected " + stac + " on line " + tok.getLine() +
+                            " instead of " + tok.getSymbol());
                 }
-                int i = getRule(key, stac);
-                stack.pop();
-                stackAdd(i);
-            } else if(!isNonTerminal(stac)){
+                step++;
+            } catch (ParseError e){
+                System.err.println(e.getMessage());
                 System.exit(1);
             }
-            if(verbose){
-
-            }
-            step ++;
         }
 
         System.out.println("\nParse Accepted");
@@ -77,6 +88,10 @@ public class Parser {
 
     private String dumpStack(){
         return stack.toString();
+    }
+
+    public void setVerbose(boolean verbose) {
+        this.verbose = verbose;
     }
 
 }

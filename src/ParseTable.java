@@ -44,80 +44,14 @@ public class ParseTable {
    }
 
    private int getToken(String in){
-       switch(in){
-           case "PROGRAM":
-               return 0;
-           case "BEGIN":
-               return 1;
-           case "END":
-               return 2;
-           case "VAR":
-               return 3;
-           case "FUNCTION":
-               return 4;
-           case "PROCEDURE":
-               return 5;
-           case "RESULT":
-               return 6;
-           case "INTEGER":
-               return 7;
-           case "REAL":
-                return 8;
-           case "ARRAY":
-               return 9;
-           case "OF":
-               return 10;
-           case "IF":
-               return 11;
-           case "THEN":
-               return 12;
-           case "ELSE":
-               return 13;
-           case "WHILE":
-               return 14;
-           case "DO":
-               return 15;
-           case "NOT":
-               return 16;
-           case "IDENTIFIER":
-               return 17;
-           case "INTCONSTANT":
-               return 18;
-           case "REALCONSTANT":
-               return 19;
-           case "RELOP":
-               return 20;
-           case "MULOP":
-               return 21;
-           case "ADDOP":
-               return 22;
-           case "ASSIGNOP":
-               return 23;
-           case "COMMA":
-               return 24;
-           case "SEMICOLON":
-               return 25;
-           case "COLON":
-               return 26;
-           case "LPAREN":
-               return 27;
-           case "RPAREN":
-               return 28;
-           case "LBRACKET":
-               return 29;
-           case "RBRACKET":
-               return 30;
-           case "UNARYMINUS":
-               return 31;
-           case "UNARYPLUS":
-               return 32;
-           case "DOUBLEDOT":
-               return 33;
-           case "ENDMARKER":
-               return 34;
-           default:
-               return 35;
-       }
+       String[] list = new String[]{
+               "PROGRAM", "BEGIN", "END","VAR","FUNCTION","PROCEDURE","RESULT","INTEGER","REAL","ARRAY","OF","IF","THEN",
+               "ELSE","WHILE","DO","NOT","IDENTIFIER","INTCONSTANT","REALCONSTANT","RELOP","MULOP","ADDOP","ASSIGNOP",
+               "COMMA","SEMICOLON","COLON","LPAREN","RPAREN","LBRACKET","RBRACKET","UNARYMINUS","UNARYPLUS","DOUBLEDOT",
+               "ENDMARKER"
+       };
+
+       return Arrays.asList(list).indexOf(in);
    }
 
    private int getStack(String in){

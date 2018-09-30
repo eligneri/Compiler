@@ -62,7 +62,7 @@ public class Lexer {
     private String input = "";
 
     //Store the previous token in order to check it later
-    private Token previousToken = new Token(null, null);
+    private Token previousToken = new Token(null, null, 0);
 
     //Reads the input file into a string
     private void start() throws IOException {
@@ -85,6 +85,9 @@ public class Lexer {
     //Returns the next char in the string
     private char getNextChar(){
         index++;
+        if(index > input.length()){
+            return ' ';
+        }
         if(input.charAt(index - 1) == '\n'){
             line++;
         }
@@ -94,6 +97,9 @@ public class Lexer {
     //used to get back to our initial position after a lookahead
     private void goBack(){
         index--;
+        if(index >= input.length()){
+            return;
+        }
         if(input.charAt(index) == '\n'){
             line--;
         }
@@ -105,7 +111,7 @@ public class Lexer {
 
         //check to see if we have reached the end of the file
         if(index >= input.length()){
-            return new Token("ENDOFFILE", null);
+            return new Token("ENDOFFILE", null, line);
         }
 
         char c = getNextChar();
@@ -113,7 +119,7 @@ public class Lexer {
         //scrolls over blanks
         while (isBlank(c)){
             if(index >= input.length()){
-                return new Token("ENDOFFILE", null);
+                return new Token("ENDOFFILE", null, line);
             }
             c = getNextChar();
         }
@@ -153,7 +159,7 @@ public class Lexer {
         //finds if identifier is a keyword or operator
         if(keywords.contains(output)){
             //goBack();
-            return new Token(output.toUpperCase(), null);
+            return new Token(output.toUpperCase(), null, line);
         } else if(keyOps.contains(output)){
             //goBack();
             return opSelector(output);
@@ -164,7 +170,7 @@ public class Lexer {
             try {
                 if (output.length() <= IDENTIFIER_MAX_LENGTH) {
                    // goBack();
-                    return new Token("IDENTIFIER", output);
+                    return new Token("IDENTIFIER", output, line);
                 } else {
                     //goBack();
                     throw new LexicalError("Identifier exceeds maximum length of 32 chars: ");
@@ -194,7 +200,7 @@ public class Lexer {
             if(isDoubleDot()){
                 goBack();
                 goBack();
-                return new Token("INTCONSTANT", value);
+                return new Token("INTCONSTANT", value, line);
             }
             //make sure the constant follows lexical rules
             try {
@@ -218,15 +224,15 @@ public class Lexer {
                 return(exponent(c, value));
             }
             goBack();
-            return new Token("REALCONSTANT", value);
+            return new Token("REALCONSTANT", value, line);
         }
         //or Xe(+/-)Y
         if (c == 'e') {
-            exponent(c, value);
+            return exponent(c, value);
         }
 
         goBack();
-        return new Token("INTCONSTANT", value);
+        return new Token("INTCONSTANT", value, line);
     }
 
     //method for determining token type and value when char is punctuation
@@ -241,29 +247,29 @@ public class Lexer {
         try {
             switch (c) {
                 case '(':
-                    return new Token("LPAREN", null);
+                    return new Token("LPAREN", null, line);
                 case ')':
-                    return new Token("RPAREN", null);
+                    return new Token("RPAREN", null, line);
                 case '[':
-                    return new Token("LBRACKET", null);
+                    return new Token("LBRACKET", null, line);
                 case ']':
-                    return new Token("RBRACKET", null);
+                    return new Token("RBRACKET", null, line);
                 case ';':
-                    return new Token("SEMICOLON", null);
+                    return new Token("SEMICOLON", null, line);
                 case ':':
                     if (getNextChar() == '=') {
-                        return new Token("ASSIGNOP", null);
+                        return new Token("ASSIGNOP", null, line);
                     } else {
                         goBack();
-                        return new Token("COLON", null);
+                        return new Token("COLON", null, line);
                     }
                 case ',':
-                    return new Token("COMMA", null);
+                    return new Token("COMMA", null, line);
                 case '.':
                     if (isDoubleDot()) {
-                        return new Token("DOUBLEDOT", null);
+                        return new Token("DOUBLEDOT", null, line);
                     } else {
-                        return new Token("ENDMARKER", null);
+                        return new Token("ENDMARKER", null, line);
                     }
                 default:
                     throw new LexicalError("Right Brace not allowed");
@@ -280,36 +286,36 @@ public class Lexer {
     private Token opNFA(char c){
         switch(c){
             case '=':
-                return new Token("RELOP", 1);
+                return new Token("RELOP", 1, line);
             case '<':
                 char x = getNextChar();
                 if(x =='>'){
-                    return new Token("RELOP", 2);
+                    return new Token("RELOP", 2, line);
                 } else if(x == '='){
 
-                    return new Token("RELOP", 5);
+                    return new Token("RELOP", 5, line);
                 } else {
                     goBack();
-                    return new Token("RELOP", 3);
+                    return new Token("RELOP", 3, line);
                 }
             case '>':
                 x = getNextChar();
                 if(x == '='){
-                    return new Token("RELOP", 6);
+                    return new Token("RELOP", 6, line);
                 } else {
                     goBack();
-                    return new Token("RELOP", 4);
+                    return new Token("RELOP", 4, line);
                 }
             case '*':
-                return new Token("MULOP", 1);
+                return new Token("MULOP", 1, line);
             case '/':
-                return new Token("MULOP", 2);
+                return new Token("MULOP", 2, line);
             case '+':
             case '-':
                 return unaryOrAdd(c);
              //should not be reached
             default:
-                return new Token(null,null);
+                return new Token(null,null, 0);
         }
     }
 
@@ -334,7 +340,7 @@ public class Lexer {
                 c = getNextChar();
             }
             goBack();
-            return new Token ("REALCONSTANT", value);
+            return new Token ("REALCONSTANT", value, line);
     }
 
     //determines if the + and - symbols are ADDOP's or UNARYOP's
@@ -343,16 +349,16 @@ public class Lexer {
                 previousToken.getKey() == "IDENTIFIER" || previousToken.getKey() == "INTCONSTANT" ||
                 previousToken.getKey() == "REALCONSTANT") {
             if(c == '+'){
-                return new Token("ADDOP",1);
+                return new Token("ADDOP",1, line);
             } else {
-                return new Token ("ADDOP", 2);
+                return new Token ("ADDOP", 2, line);
             }
 
         } else {
             if(c == '+'){
-                return new Token("UNARYPLUS", null);
+                return new Token("UNARYPLUS", null, line);
             } else {
-                return new Token("UNARYMINUS", null);
+                return new Token("UNARYMINUS", null, line);
             }
         }
     }
@@ -361,15 +367,15 @@ public class Lexer {
     private Token opSelector(String input){
         switch(input){
             case "div":
-                return new Token("MULOP", 3);
+                return new Token("MULOP", 3, line);
             case "mod":
-                return new Token("MULOP", 4);
+                return new Token("MULOP", 4, line);
             case "and":
-                return new Token("MULOP", 5);
+                return new Token("MULOP", 5, line);
             case "or":
-                return new Token("ADDOP", 3);
+                return new Token("ADDOP", 3, line);
             default:
-                return new Token(null, null);
+                return new Token(null, null, 0);
         }
     }
 

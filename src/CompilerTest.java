@@ -2,7 +2,7 @@ import java.io.File;
 
 public class CompilerTest {
     public static void main(String args[]){
-        /*File file = new File("/Users/Ellis/IdeaProjects/Compiler/Lexer_Test.txt");
+        /*File file = new File("/Users/Ellis/IdeaProjects/Compiler/ult-corrected.txt");
         Lexer lex = new Lexer(file);
         Token token = new Token(null,null);
         Token end = new Token("ENDOFFILE", null);
