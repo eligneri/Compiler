@@ -45,3 +45,5 @@ end.
 { max identifier length }
 { uncomment the 'g' to push over 32-character limit, or add an extra right brace to create an invalid comment }
 abcdefghijklmnopqrstuvwxyzabcdef{g}
+
+1.0e.1.1 34e+

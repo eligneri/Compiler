@@ -18,7 +18,7 @@ public class Lexer {
 
     //Declarations of accepted characters categorized as well as the maximum length of an identifier
     private static final String VALID_CHARS_ALPHA =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+            "abcdefghijklmnopqrstuvwxyz";
     private static final String VALID_CHARS_NUMERIC =
             "1234567890";
     private static final String VALID_CHARS_PUNCTUATION =
@@ -397,6 +397,7 @@ public class Lexer {
     /*
     *  TODO: better error handling
     *  TODO: Add a method for attaching unary operators to constants
+    *  TODO: anything other than white space or eof after a number is not allowed
     */
 
 }
