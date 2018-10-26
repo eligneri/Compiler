@@ -13,6 +13,7 @@ To test semantic actions, run main method in CompilerTest.
 10/26/18
 -Began implementing semantic actions
 -Updated Symbol Table objects with more robust debugging information
+-Added augmented grammar
 
 10/12/18
 -Added Symbol Table and requisite subclasses
