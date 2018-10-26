@@ -92,4 +92,18 @@ public class Token{
         return line;
     }
 
+    public String getValue() {
+        if(value != null){
+            return value;
+        } else {
+            return String.valueOf(intValue);
+        }
+    }
+
+    public int toInt(){
+        String value = this.getValue();
+        return Integer.parseInt(value);
+    }
+
+
 }

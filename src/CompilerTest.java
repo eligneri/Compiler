@@ -11,11 +11,12 @@ public class CompilerTest {
             System.out.println(token);
         }*/
 
-      /* File file = new File("/Users/Ellis/IdeaProjects/Compiler/simple.txt");
+       File file = new File("/Users/Ellis/IdeaProjects/Compiler/simple.txt");
        Parser p = new Parser(file);
-       p.parse();*/
+       p.setVerbose(true);
+       p.parse();
 
-      SymbolTable table = new SymbolTable(6);
+      /*SymbolTable table = new SymbolTable(6);
       table.insert(new IODeviceEntry("read"));
       table.insert(new ProcedureEntry("input", 0));
       table.insert(new VariableEntry("a"));
@@ -23,5 +24,6 @@ public class CompilerTest {
       table.insert(new ConstantEntry("hello"));
       table.insert(new FunctionEntry("function"));
       table.dumpTable();
+      */
     }
 }

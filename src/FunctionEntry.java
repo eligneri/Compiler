@@ -11,14 +11,16 @@ public class FunctionEntry extends SymbolTableEntry {
         numberOfParameters = p;
         parameterInfo = l;
         result = r;
+        function = true;
     }
 
     public FunctionEntry(String n){
         name = n;
+        function = true;
     }
 
-    @Override
-    public boolean isFunction() {
-        return true;
+    public String toString(){
+        return "FunctionEntry: name=" + name + " numberofparameters=" + numberOfParameters + " parameterinfo=" +
+                parameterInfo + " result=" + result;
     }
 }

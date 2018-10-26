@@ -1,13 +1,16 @@
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.Stack;
 import java.io.File;
 
 public class Parser {
+    //Stack implemented as a linkedlist because it makes the printout look better. For some reason a Stack Object will print bottom up
     private LinkedList<String> stack = new LinkedList<>();
     private ParseTable table = new ParseTable();
     private Grammar g;
     private Lexer lex;
-    private boolean verbose = true;
+    private boolean verbose = false;
+    private SemanticAction actions = new SemanticAction();
 
     public Parser(File file){
         lex = new Lexer(file);
@@ -20,6 +23,7 @@ public class Parser {
     private int step = 1;
 
     public void parse(){
+        Token prevTok = null;
         Token tok = lex.getNextToken();
         String key = tok.getKey();
         while(!stack.isEmpty()){
@@ -33,6 +37,7 @@ public class Parser {
                         System.out.println("Popped " + stac + " with token " + key + " *MATCH* {consume token}");
                     }
                     stack.pop();
+                    prevTok = tok;
                     tok = lex.getNextToken();
                     key = tok.getKey();
                 } else if (isNonTerminal(stac)) {
@@ -47,6 +52,13 @@ public class Parser {
                     }
                     stack.pop();
                     stackAdd(i);
+                } else if(isSemantic(stac)) {
+                    if(verbose){
+                        System.out.println("Popped " + stac + " with token " + key + " *SEMANTIC ACTION* [" +
+                                stac.substring(1) + "]");
+                    }
+                    actions.execute(stac.substring(1), prevTok);
+                    stack.pop();
                 } else if (!isNonTerminal(stac)) {
                     throw new ParseError("Invalid Symbol. Expected " + stac + " on line " + tok.getLine() +
                             " instead of " + tok.getSymbol());
@@ -65,6 +77,9 @@ public class Parser {
         return s.charAt(0) == '<';
     }
 
+    private boolean isSemantic(String s){
+        return s.charAt(0) == '#';
+    }
     private int getRule(String key, String stac){
         return table.getValue(key, stac);
     }
@@ -92,6 +107,7 @@ public class Parser {
 
     public void setVerbose(boolean verbose) {
         this.verbose = verbose;
+        actions.setVerbose(verbose);
     }
 
 }

@@ -9,4 +9,8 @@ public class ConstantEntry extends SymbolTableEntry{
     public ConstantEntry (String n){
         name = n;
     }
+
+    public String toString(){
+        return "ConstantEntry: name=" + name + " type=" + type;
+    }
 }

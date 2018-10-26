@@ -8,15 +8,17 @@ public class ProcedureEntry extends SymbolTableEntry {
         name = n;
         numberofParameters =p;
         parameterInfo = l;
+        procedure = true;
     }
 
     public ProcedureEntry(String n, int p){
         name = n;
         numberofParameters = p;
+        procedure = true;
     }
 
-    @Override
-    public boolean isProcedure() {
-        return true;
+    public String toString(){
+        return "ProcedureEntry: name=" + name + "numberofparameters=" + numberofParameters + " parameterinfo=" +
+                parameterInfo;
     }
 }

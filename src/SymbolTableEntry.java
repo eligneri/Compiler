@@ -1,31 +1,41 @@
 public class SymbolTableEntry {
     protected String name;
 
+    protected Boolean variable = false;
+    protected Boolean procedure = false;
+    protected Boolean function = false;
+    protected Boolean functionResult = false;
+    protected Boolean parameter = false;
+    protected Boolean array = false;
+    protected Boolean reserved = false;
+
     public boolean isVariable(){
-        return false;
+        return variable;
     }
     public boolean isProcedure(){
-        return false;
+        return procedure;
     }
     public boolean isFunction(){
-        return false;
+        return function;
     }
     public boolean isFunctionResult(){
-        return false;
+        return functionResult;
     }
     public boolean isParameter(){
-        return false;
+        return parameter;
     }
     public boolean isArray(){
-        return false;
+        return array;
     }
     public boolean isReserved(){
-        return false;
+        return reserved;
     }
-
 
     public String toString(){
         return this.getClass().getSimpleName() + ": " + name;
     }
 
+    public void setReserved(Boolean b){
+        reserved = b;
+    }
 }
