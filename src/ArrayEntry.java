@@ -1,6 +1,6 @@
 public class ArrayEntry extends SymbolTableEntry {
-    protected int address;
-    protected String type;
+    //protected int address;
+    //protected String type;
     protected int upperBound;
     protected int lowerBound;
 

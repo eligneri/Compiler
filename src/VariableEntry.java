@@ -1,6 +1,6 @@
 public class VariableEntry extends SymbolTableEntry {
-    protected int address;
-    protected String type;
+    //protected int address;
+    //protected String type;
 
     public VariableEntry (String n, int a, String t){
         name = n;

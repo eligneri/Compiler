@@ -1,5 +1,5 @@
 public class ConstantEntry extends SymbolTableEntry{
-    protected String type;
+    //protected String type;
 
     public ConstantEntry(String n, String t){
         name = n;

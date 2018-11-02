@@ -8,8 +8,8 @@ public class SymbolTable {
         table = new Hashtable(i);
     }
 
-    public SymbolTableEntry lookup(SymbolTableEntry e){
-        return table.get(e.name);
+    public SymbolTableEntry lookup(String e){
+        return table.get(e);
     }
 
     public void insert(SymbolTableEntry e){

@@ -11,9 +11,9 @@ public class CompilerTest {
             System.out.println(token);
         }*/
 
-       File file = new File("/Users/Ellis/IdeaProjects/Compiler/simple.txt");
+       File file = new File("/Users/Ellis/IdeaProjects/Compiler/phase2-1_ns.vas.txt");
        Parser p = new Parser(file);
-       p.setVerbose(true);
+       p.setVerbose(false);
        p.parse();
 
       /*SymbolTable table = new SymbolTable(6);

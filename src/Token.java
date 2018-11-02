@@ -84,6 +84,29 @@ public class Token{
         return "Invalid Token Found";
     }
 
+    public String getOpCode() {
+        if (key == "ADDOP") {
+            switch (intValue) {
+                case 1:
+                    return "add";
+                case 2:
+                    return "sub";
+            }
+        } else if (key == "MULOP") {
+            switch (intValue) {
+                case 1:
+                    return "mul";
+                case 2:
+                    return "div";
+                case 3:
+                    return "DIV";
+                case 4:
+                    return "MOD";
+            }
+        }
+        return "Invalid Token Found";
+    }
+
     public String getKey() {
         return key;
     }

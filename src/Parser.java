@@ -71,6 +71,7 @@ public class Parser {
         }
 
         System.out.println("\nParse Accepted");
+        actions.intermediateCodePrint();
     }
 
     private boolean isNonTerminal(String s){

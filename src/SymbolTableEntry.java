@@ -1,5 +1,7 @@
 public class SymbolTableEntry {
     protected String name;
+    protected String type;
+    protected Integer address;
 
     protected Boolean variable = false;
     protected Boolean procedure = false;
@@ -37,5 +39,25 @@ public class SymbolTableEntry {
 
     public void setReserved(Boolean b){
         reserved = b;
+    }
+
+    public String getType(){
+        if(type != null){
+            return type;
+        } else {
+            return null;
+        }
+    }
+
+    public Integer getAddress(){
+        if(address != null){
+            return address;
+        } else {
+            return null;
+        }
+    }
+
+    public String getName(){
+        return name;
     }
 }

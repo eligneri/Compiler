@@ -8,7 +8,11 @@ The parser is currently being tested as part of testing semantic actions.
 
 To test the symbol table, uncomment and run the third section of the main method in CompilerTest. This will load 6 values into the table and then dump the stack.
 
-To test semantic actions, run main method in CompilerTest.
+To test semantic actions, run main method in CompilerTest. NOTE: I tested all provided sample files and ran into problems with file 6. I think the sample files take advantage of actions we haven't implemented yet as there was a "bge" TVI code and nowhere in the specifications does bge get generated.
+If you would like to test error handling, uncomment lines in phase2-1_ns.vas.txt
+
+11/2/18
+-Added Semantic Actions for basic expressions
 
 10/26/18
 -Began implementing semantic actions
