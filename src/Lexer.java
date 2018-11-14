@@ -345,7 +345,7 @@ public class Lexer {
 
     //determines if the + and - symbols are ADDOP's or UNARYOP's
     private Token unaryOrAdd(char c){
-        if (previousToken.getKey() == "RIGHTPAREN" || previousToken.getKey() == "RIGHTBRACKET" ||
+        if (previousToken.getKey() == "RPAREN" || previousToken.getKey() == "RBRACKET" ||
                 previousToken.getKey() == "IDENTIFIER" || previousToken.getKey() == "INTCONSTANT" ||
                 previousToken.getKey() == "REALCONSTANT") {
             if(c == '+'){

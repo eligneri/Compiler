@@ -99,9 +99,24 @@ public class Token{
                 case 2:
                     return "div";
                 case 3:
-                    return "DIV";
+                    return "div";
                 case 4:
                     return "MOD";
+            }
+        } else {
+            switch(intValue){
+                case 1:
+                    return "beq";
+                case 2:
+                    return "bne";
+                case 3:
+                    return "blt";
+                case 4:
+                    return "bgt";
+                case 5:
+                    return "ble";
+                case 6:
+                    return "bge";
             }
         }
         return "Invalid Token Found";

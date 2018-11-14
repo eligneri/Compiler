@@ -2,7 +2,7 @@ import java.io.File;
 
 public class CompilerTest {
     public static void main(String args[]){
-        /*File file = new File("/Users/Ellis/IdeaProjects/Compiler/Lexer_Test.txt");
+        /*File file = new File("/Users/Ellis/IdeaProjects/Compiler/phase3-8.vas.txt");
         Lexer lex = new Lexer(file);
         Token token = new Token(null,null, 0);
         Token end = new Token("ENDOFFILE", null, 0);
@@ -11,10 +11,13 @@ public class CompilerTest {
             System.out.println(token);
         }*/
 
-       File file = new File("/Users/Ellis/IdeaProjects/Compiler/phase2-1_ns.vas.txt");
+       File file = new File("/Users/Ellis/IdeaProjects/Compiler/phase3-8.vas.txt");
        Parser p = new Parser(file);
-       p.setVerbose(false);
+       p.setVerbose(true);
        p.parse();
+
+       //"/Users/Ellis/IdeaProjects/Compiler/Lexer_Test.txt"
+
 
       /*SymbolTable table = new SymbolTable(6);
       table.insert(new IODeviceEntry("read"));
