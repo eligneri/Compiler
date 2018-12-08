@@ -9,7 +9,9 @@ The parser is currently being tested as part of testing semantic actions.
 To test the symbol table, uncomment and run the third section of the main method in CompilerTest. This will load 6 values into the table and then dump the stack.
 
 To test semantic actions, run main method in CompilerTest.
-If you would like to test error handling, uncomment line 47 in phase3-8.vas.txt
+
+12/8/18
+-Added semantic actions for local methods
 
 11/13/18
 -Added Semantic actions for subscripts, relational, and boolean operations

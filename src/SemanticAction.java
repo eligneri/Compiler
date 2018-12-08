@@ -14,9 +14,14 @@ public class SemanticAction {
     private int localMemory;
     private int tempVars;
     private int globalStore;
+    private int localStore;
+    private int nextParam;
+    private SymbolTableEntry currentFunction;
 
     //Stack implemented as a linkedlist because it makes the printout look better. For some reason a Stack Object will print bottom up
     private LinkedList<Object> stack;
+    private LinkedList<Integer> paramCount;
+    private LinkedList<List<SymbolTableEntry>> paramStack;
     private Quadruples quads;
 
     private boolean verbose = false;
@@ -39,7 +44,11 @@ public class SemanticAction {
         globalStore = 0;
 
         stack = new LinkedList<>();
+        paramStack = new LinkedList<>();
         quads = new Quadruples();
+
+        paramCount = new LinkedList<>();
+        paramCount.push(0);
     }
 
 
@@ -62,6 +71,9 @@ public class SemanticAction {
             case 4:
                 actionFour(tok);
                 break;
+            case 5:
+                actionFive();
+                break;
             case 6:
                 array = true;
                 break;
@@ -71,8 +83,29 @@ public class SemanticAction {
             case 9:
                 actionNine();
                 break;
+            case 11:
+                actionEleven();
+                break;
             case 13:
                 actionThirteen(tok);
+                break;
+            case 15:
+                actionFifteen(tok);
+                break;
+            case 16:
+                actionSixteen();
+                break;
+            case 17:
+                actionSeventeen(tok);
+                break;
+            case 19:
+                actionNineteen();
+                break;
+            case 20:
+                actionTwenty();
+                break;
+            case 21:
+                actionTwentyOne();
                 break;
             case 22:
                 actionTwentyTwo(tok);
@@ -110,6 +143,15 @@ public class SemanticAction {
             case 34:
                 actionThirtyFour(tok);
                 break;
+            case 35:
+                actionThirtyFive();
+                break;
+            case 36:
+                actionThirtySix();
+                break;
+            case 37:
+                actionThirtySeven();
+                break;
             case 38:
                 actionThirtyEight(tok);
                 break;
@@ -144,6 +186,18 @@ public class SemanticAction {
                 break;
             case 48:
                 actionFortyEight(tok);
+                break;
+            case 49:
+                actionFortyNine();
+                break;
+            case 50:
+                actionFifty();
+                break;
+            case 51:
+                actionFiftyOne(tok);
+                break;
+            case 52:
+                actionFiftyTwo();
                 break;
             case 53:
                 actionFiftyThree();
@@ -218,7 +272,7 @@ public class SemanticAction {
                     localMemory++;
                 }
 
-                if(stack.peek() == null){
+                if(stack.peek() == null || stack.peek().getClass().getSimpleName() != "Token"){
                     break;
                 }
                 test = (Token)stack.peek();
@@ -237,6 +291,14 @@ public class SemanticAction {
         if(type.equals("INTEGER") || type.equals("REAL")){
             stack.push(t);
         }
+    }
+
+    private void actionFive(){
+        insert = false;
+        SymbolTableEntry id = (SymbolTableEntry)stack.pop();
+        gen("PROCBEGIN", id.name);
+        localStore = quads.getNextQuad();
+        gen("alloc", "_");
     }
 
     private void actionSeven(Token t){
@@ -276,14 +338,105 @@ public class SemanticAction {
 
         insert = false;
 
-        gen("call", "main", "0");
+        gen("call", "main", 0);
         gen("exit");
+    }
+
+    private void actionEleven(){
+        global = true;
+        localTable = new SymbolTable(100);
+        currentFunction = null;
+        backpatch(makeList(localStore), String.valueOf(localMemory));
+        gen("free", String.valueOf(localMemory));
+        gen("PROCEND");
     }
 
     private void actionThirteen(Token t){
         if(t.getKey() == "IDENTIFIER"){
             stack.push(t);
         }
+    }
+
+    private void actionFifteen(Token t){
+        VariableEntry result = create(t.getValue() + "_RESULT", "integer");
+        result.setResult();
+        SymbolTableEntry id = new FunctionEntry(t.getValue(), result);
+
+        globalTable.insert(id);
+        global = false;
+        localMemory = 0;
+        currentFunction = id;
+        stack.push(id);
+    }
+
+    private void actionSixteen(){
+        Token type = (Token)stack.pop();
+        FunctionEntry id = (FunctionEntry)stack.peek();
+        id.setType(type.getKey());
+        id.setResultType(type.getKey());
+        currentFunction = id;
+    }
+
+    private void actionSeventeen(Token t){
+        SymbolTableEntry id = new ProcedureEntry(t.getValue());
+        globalTable.insert(id);
+        global = false;
+        localMemory = 0;
+        currentFunction = id;
+        stack.push(id);
+    }
+
+    private void actionNineteen(){
+        paramStack = new LinkedList<>();
+        paramCount.push(0);
+    }
+
+    private void actionTwenty(){
+        SymbolTableEntry id = (SymbolTableEntry)stack.peek();
+        int numParams = paramCount.pop();
+        id.setNumberOfParameters(numParams);
+    }
+
+    private void actionTwentyOne(){
+        Token type = (Token)stack.pop();
+        int upperBound = -1;
+        int lowerBound = -1;
+
+        if(array){
+            Token ub = (Token)stack.pop();
+            Token lb = (Token)stack.pop();
+            upperBound = Integer.parseInt(ub.getValue());
+            lowerBound = Integer.parseInt(lb.getValue());
+        }
+
+        LinkedList<Token> parameters = new LinkedList<>();
+
+        Token t = (Token)stack.peek();
+        while(t.getKey() == "IDENTIFIER"){
+            parameters.push((Token)stack.pop());
+            if(stack.peek().getClass().getSimpleName() != "Token"){
+                break;
+            }
+            t = (Token)stack.peek();
+        }
+
+        while(!parameters.isEmpty()) {
+            Token param = parameters.pop();
+            SymbolTableEntry var;
+            if (array) {
+                var = new ArrayEntry(param.getValue(), localMemory, type.getKey(), upperBound, lowerBound);
+            } else {
+                var = new VariableEntry(param.getValue(), localMemory, type.getKey());
+            }
+            var.setParameter();
+            localTable.insert(var);
+            currentFunction.addParameter(var);
+            localMemory++;
+            paramCount.push(paramCount.pop() + 1);
+        }
+
+        array = false;
+
     }
 
     private void actionTwentyTwo(Token t){
@@ -385,7 +538,7 @@ public class SemanticAction {
                 throw new SemanticError("Type mismatch. Can not assign real to int");
             } else if(type == 2){
                 VariableEntry temp = create(tempName(), "real");
-                gen("ltof", temp.getName(), _id1.name);
+                gen("ltof", _id2.name, temp.getName());
                 if(_offset == null){
                     gen("move", temp.getName(), _id1.name);
                 } else {
@@ -463,7 +616,9 @@ public class SemanticAction {
             stack.push(temp2);
         } else {
             VariableEntry temp = create(tempName(), "integer");
+            insert = false;
             gen("sub", id.name, String.valueOf(arr.lowerBound), temp.name);
+            insert = true;
             stack.push(temp);
         }
 
@@ -478,6 +633,89 @@ public class SemanticAction {
             execute("52", t);
         } else {
             stack.push(null);
+        }
+    }
+
+    private void actionThirtyFive(){
+        EType etype = (EType)stack.pop();
+        ProcedureEntry id = (ProcedureEntry)stack.peek();
+        stack.push(etype);
+        paramCount.push(0);
+        paramStack.push(id.parameterInfo);
+    }
+
+    private void actionThirtySix(){
+        EType etype = (EType)stack.pop();
+        ProcedureEntry id = (ProcedureEntry)stack.pop();
+        try {
+            if (id.numberofParameters != 0) {
+                throw new SemanticError("Wrong number of parameters. Expected 0 in procedure: " + id.name);
+            }
+        } catch(SemanticError e){
+            System.err.println(e);
+            System.exit(1);
+        }
+        insert = true;
+        gen("call", id.name, 0);
+        insert = false;
+    }
+
+    private void actionThirtySeven(){
+        EType etype = (EType)stack.pop();
+        try{
+            if(etype != EType.ARITHMETIC){
+                throw new SemanticError("Expression Type mismatch: Expected Arithmetic instead of relational");
+            }
+
+            SymbolTableEntry id = (SymbolTableEntry)stack.peek();
+            if(!(id.isVariable() || id.isFunctionResult() || id.isArray() || id.getClass().getSimpleName() == "ConstantEntry")){
+                throw new SemanticError("Unexpected Parameter " + id.name);
+            }
+            paramCount.push(paramCount.pop() + 1);
+
+            LinkedList<SymbolTableEntry> parameters = new LinkedList<>();
+
+            SymbolTableEntry s = (SymbolTableEntry)stack.peek();
+            while(!(s.isFunction() || s.isProcedure())){
+                parameters.push(s);
+                stack.pop();
+                if(stack.peek().equals(EType.ARITHMETIC) || stack.peek().equals(EType.RELATIONAL)) {
+                    stack.pop();
+                    break;
+                }
+                s = (SymbolTableEntry)stack.peek();
+            }
+
+            SymbolTableEntry funcID = (SymbolTableEntry)stack.peek();
+            stack.push(etype);
+            while(!parameters.isEmpty()){
+                stack.push(parameters.pop());
+            }
+
+            if(!(funcID.name == "read" || funcID.name == "write")){
+                if(paramCount.peek() > funcID.getNumberOfParameters()){
+                    throw new SemanticError("Wrong number of parameters for " + funcID.name + ". Expected " +
+                            funcID.getNumberOfParameters());
+                }
+
+                SymbolTableEntry param = paramStack.peek().get(nextParam);
+                if(!id.getType().toLowerCase().equals(param.getType().toLowerCase())){
+                    throw new SemanticError("Bad parameter type, expected " + param.name + " to be a(n) " + id.getType());
+                }
+                if(param.isArray()){
+                    ArrayEntry _id = (ArrayEntry)id;
+                    ArrayEntry _param = (ArrayEntry)param;
+                    if((_id.getLowerBound() != _param.getLowerBound()) ||
+                            (_id.getUpperBound() != _param.getUpperBound())){
+                        throw new SemanticError("Expected " + param.name + " to have a lower bound of " +
+                                _id.getLowerBound() + " and an upper bound of " + _id.getUpperBound());
+                    }
+                }
+                nextParam++;
+            }
+        } catch (SemanticError e){
+            System.err.println(e);
+            System.exit(1);
         }
     }
 
@@ -526,7 +764,9 @@ public class SemanticAction {
             gen("ltof", id1.name, id2.name);
             gen(opcode, temp.name, id2.name, "_");
         } else {
+            //insert = false;
             gen(opcode, id1.name, id2.name, "_");
+            //insert = true;
         }
 
         gen("goto", "_");
@@ -799,11 +1039,204 @@ public class SemanticAction {
         stack.push(EType.ARITHMETIC);
     }
 
+    private void actionFortyNine(){
+        EType etype = (EType)stack.pop();
+        SymbolTableEntry id = (SymbolTableEntry)stack.peek();
+        stack.push(etype);
+
+        try{
+            if(etype != EType.ARITHMETIC){
+                throw new SemanticError("Expected " + id.name + " to be arithmetic not relational");
+            }
+
+            if(!id.isFunction()){
+                throw new SemanticError("Expected " + id.name + " to be a function");
+            }
+        } catch(SemanticError e){
+            System.err.println(e);
+            System.exit(1);
+        }
+
+        paramCount.push(0);
+        FunctionEntry _id = (FunctionEntry)id;
+        paramStack.push(_id.getParameterInfo());
+    }
+
+    private void actionFifty(){
+        LinkedList<SymbolTableEntry> parameters = new LinkedList<>();
+        SymbolTableEntry s = (SymbolTableEntry)stack.peek();
+        while(s.isArray() || s.isVariable() || s.getClass().getSimpleName() == "ConstantEntry"){
+            parameters.push(s);
+            stack.pop();
+            if(stack.peek().equals(EType.ARITHMETIC) || stack.peek().equals(EType.RELATIONAL)) {
+                break;
+            }
+            s = (SymbolTableEntry)stack.peek();
+        }
+
+        while(!parameters.isEmpty()){
+            gen("param " + getConstantOrNotParam(getParamPrefix(parameters.peek()), parameters.pop()));
+            localMemory++;
+        }
+
+        EType etype = (EType)stack.pop();
+        FunctionEntry id = (FunctionEntry)stack.pop();
+        int numParams = paramCount.pop();
+        try{
+            if(numParams > id.getNumberOfParameters()){
+                throw new SemanticError("Expected " + id.name + " to have " + id.getNumberOfParameters() + " parameters");
+            }
+        } catch (SemanticError e){
+            System.err.println(e);
+            System.exit(1);
+        }
+
+        gen("call", id.name, numParams);
+        paramStack.pop();
+        nextParam = 0;
+
+        VariableEntry temp = create(tempName(), id.getResult().getType());
+        gen("move", id.getResult().name, temp.name);
+        stack.push(temp);
+        stack.push(EType.ARITHMETIC);
+    }
+
+    private void actionFiftyOne(Token t){
+        LinkedList<SymbolTableEntry> parameters = new LinkedList<>();
+        SymbolTableEntry s = (SymbolTableEntry)stack.peek();
+        while(s.isArray() || s.isVariable() || s.getClass().getSimpleName() == "ConstantEntry"){
+            parameters.push(s);
+            stack.pop();
+            if(stack.peek().equals(EType.ARITHMETIC) || stack.peek().equals(EType.RELATIONAL)) {
+                break;
+            }
+            s = (SymbolTableEntry) stack.peek();
+
+        }
+
+        EType etype = (EType)stack.pop();
+        ProcedureEntry id = (ProcedureEntry)stack.pop();
+
+        if(id.name == "read" || id.name =="write"){
+            stack.push(id);
+            stack.push(etype);
+            while(!parameters.isEmpty()){
+                stack.push(parameters.pop());
+            }
+            if(id.name == "read"){
+                fiftyOneRead(t);
+            } else {
+                fityOneWrite(t);
+            }
+        } else {
+            int numParams = paramCount.pop();
+            try {
+                if (numParams != id.getNumberOfParameters()) {
+                    throw new SemanticError("Expected " + id.name + " to have " + id.getNumberOfParameters() + " parameters");
+                }
+            } catch(SemanticError e){
+                System.err.println(e);
+                System.exit(1);
+            }
+
+            while(!parameters.isEmpty()){
+                gen("param " + getConstantOrNotParam(getParamPrefix(parameters.peek()), parameters.pop()));
+                localMemory++;
+            }
+            insert = false;
+            gen("call", id.name, numParams);
+            insert = true;
+            paramStack.pop();
+            nextParam = 0;
+        }
+    }
+    private void fiftyOneRead(Token t){
+        LinkedList<SymbolTableEntry> parameters = new LinkedList<>();
+        SymbolTableEntry s = (SymbolTableEntry)stack.peek();
+        while(s.isVariable()){
+            parameters.push(s);
+            stack.pop();
+            if(stack.peek().equals(EType.ARITHMETIC) || stack.peek().equals(EType.RELATIONAL)) {
+                break;
+            }
+            s = (SymbolTableEntry)stack.peek();
+        }
+
+        while (!parameters.isEmpty()){
+            SymbolTableEntry id = parameters.pop();
+            if(id.getType().toLowerCase().equals("REAL")){
+                gen("finp", id.name);
+            } else {
+                gen("inp", id.name);
+            }
+        }
+
+        EType etype = (EType)stack.pop();
+        SymbolTableEntry id = (SymbolTableEntry)stack.pop();
+        paramCount.pop();
+    }
+
+    private void fityOneWrite(Token t){
+        LinkedList<SymbolTableEntry> parameters = new LinkedList<>();
+        SymbolTableEntry s = (SymbolTableEntry)stack.peek();
+        while(s.isVariable() || s.getClass().getSimpleName() == "ConstantEntry"){
+            parameters.push(s);
+            stack.pop();
+            if(stack.peek().equals(EType.ARITHMETIC) || stack.peek().equals(EType.RELATIONAL)) {
+                break;
+            }
+            s = (SymbolTableEntry)stack.peek();
+        }
+
+        while(!parameters.isEmpty()){
+            SymbolTableEntry id = parameters.pop();
+            if(id.getClass().getSimpleName() == "ConstantEntry"){
+                if(id.getType().toLowerCase().equals("REAL")){
+                    gen("foutp "+ id.name);
+                } else {
+                    gen("outp "+ id.name);
+                }
+            } else {
+                gen("print \"" + id.name + " = \"");
+                if(id.getType().equals("REAL")){
+                    gen("foutp ", id.name);
+                } else {
+                    gen("outp ", id.name);
+                }
+            }
+            gen("newl");
+        }
+        EType etype = (EType)stack.pop();
+        SymbolTableEntry id = (SymbolTableEntry)stack.pop();
+        paramCount.pop();
+    }
+
+    private void actionFiftyTwo(){
+        EType etype = (EType)stack.pop();
+        SymbolTableEntry id = (SymbolTableEntry)stack.pop();
+        try{
+            if(!id.isFunction()){
+                throw new SemanticError(id.name + " is not a function");
+            }
+            if(id.getNumberOfParameters() > 0){
+                throw new SemanticError("Expected " + id.name + " to have 0 parameters");
+            }
+        } catch(SemanticError e){
+            System.err.println(e);
+            System.exit(1);
+        }
+        gen("call", id.name,0);
+        VariableEntry temp = create(tempName(), id.getType());
+        gen("move", id.getResult().name, temp.name);
+        stack.push(temp);
+        stack.push(null);
+    }
+
     private void actionFiftyThree(){
         EType etype = (EType)stack.pop();
         SymbolTableEntry id = (SymbolTableEntry)stack.pop();
         if(id.isFunction()){
-            /*try {
+            try {
                 if (id != currentFunction) {
                     throw new SemanticError("Illegal procedure " + id);
                 }
@@ -811,7 +1244,7 @@ public class SemanticAction {
                 System.err.println(e);
             }
             stack.push(id.getResult());
-            stack.push(EType.ARITHMETIC);*/
+            stack.push(EType.ARITHMETIC);
         } else {
             stack.push(id);
             stack.push(etype);
@@ -821,9 +1254,10 @@ public class SemanticAction {
     private void actionFiftyFour(){
         EType etype = (EType)stack.pop();
         SymbolTableEntry id = (SymbolTableEntry)stack.peek();
+        stack.push(etype);
         try{
             if(!id.isProcedure()){
-                throw new SemanticError("Illegal procedure" + id.name);
+                throw new SemanticError("Expected" + id.name + " to be a procedure");
             }
         } catch(SemanticError e){
             System.err.println(e);
@@ -902,14 +1336,18 @@ public class SemanticAction {
                 Float.parseFloat(args[i]);
                 SymbolTableEntry e = constantTable.lookup(args[i]);
                 if(e != null){
-                    VariableEntry temp = create(tempName(), e.getType());
-                    String[] constant = new String[4];
-                    constant[0] = "move";
-                    constant[1] = e.getName();
-                    constant[2] = getSteAddress(temp.name);
-                    constant[3] = null;
-                    quads.addQuad(constant);
-                    code[i] = getSteAddress(temp.name);
+                   //if(!insert) {
+                        VariableEntry temp = create(tempName(), e.getType());
+                        String[] constant = new String[4];
+                        constant[0] = "move";
+                        constant[1] = e.getName();
+                        constant[2] = getSteAddress(temp.name);
+                        constant[3] = null;
+                        quads.addQuad(constant);
+                        code[i] = getSteAddress(temp.name);
+                   // } else {
+                    //    code[i] = args[i];
+                   // }
                 } else {
                     code[i] = args[i];
                 }
@@ -930,13 +1368,27 @@ public class SemanticAction {
         quads.addQuad(code);
     }
 
+    private void gen(String action, String method, int args){
+        String[] code = new String[4];
+        code[0] = action;
+        code[1] = method;
+        code[2] = String.valueOf(args);
+        code[3] = null;
+
+        quads.addQuad(code);
+    }
+
     private String getSteAddress(String s){
-        if(globalTable.lookup(s) != null){
+        if(global){
             return getConstantOrNot("_", globalTable.lookup(s));
         } else if(localTable.lookup(s) != null){
-            return getConstantOrNot("%", localTable.lookup(s));
+            if(localTable.lookup(s).isParameter()){
+                return getConstantOrNot("^%", localTable.lookup(s));
+            } else {
+                return getConstantOrNot("%", localTable.lookup(s));
+            }
         } else {
-            return null;
+            return getConstantOrNot("_", globalTable.lookup(s));
         }
     }
 
@@ -953,6 +1405,34 @@ public class SemanticAction {
         }
     }
 
+    private String getConstantOrNotParam(String pre, SymbolTableEntry e){
+        if(e.getClass().getSimpleName() == "ConstantEntry"){
+            VariableEntry temp = create(tempName(), e.getType());
+            String[] constant = new String[4];
+            constant[0] = "move";
+            constant[1] = e.getName();
+            constant[2] = getSteAddress(temp.name);
+            constant[3] = null;
+            quads.addQuad(constant);
+            return pre + temp.getAddress();
+        } else if (e.isArray() || e.isVariable()){
+            return pre + e.getAddress();
+        } else {
+            return e.name;
+        }
+    }
+
+    String getParamPrefix(SymbolTableEntry id){
+        if(global) {
+            return "@_";
+        } else {
+            if(id.isParameter()){
+                return "%";
+            } else {
+                return "@%";
+            }
+        }
+    }
     private void backpatch(List<Integer> l, String x){
         for(Integer i : l){
             String[] q = quads.getQuad(i);

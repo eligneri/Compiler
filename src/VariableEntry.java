@@ -22,6 +22,8 @@ public class VariableEntry extends SymbolTableEntry {
         this.type = type;
     }
 
+    public void setResult(){functionResult = true;}
+
     public String toString(){
         return "VariableEntry: name=" + name + " type=" + type + " address=" + address;
     }

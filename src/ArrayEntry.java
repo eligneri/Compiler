@@ -34,6 +34,9 @@ public class ArrayEntry extends SymbolTableEntry {
         this.lowerBound = lowerBound;
     }
 
+    public Integer getUpperBound(){return upperBound;}
+    public Integer getLowerBound(){return lowerBound;}
+
     public String toString(){
         return "ArrayEntry: name=" + name + " type=" + type + " upperbound=" + upperBound + " lowerbound=" + lowerBound
                 + " address=" + address;

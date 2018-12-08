@@ -11,13 +11,10 @@ public class CompilerTest {
             System.out.println(token);
         }*/
 
-       File file = new File("/Users/Ellis/IdeaProjects/Compiler/phase3-8.vas.txt");
+       File file = new File("/Users/Ellis/IdeaProjects/Compiler/ultimate.pas");
        Parser p = new Parser(file);
-       p.setVerbose(true);
+       p.setVerbose(false);
        p.parse();
-
-       //"/Users/Ellis/IdeaProjects/Compiler/Lexer_Test.txt"
-
 
       /*SymbolTable table = new SymbolTable(6);
       table.insert(new IODeviceEntry("read"));
