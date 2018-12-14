@@ -1,16 +1,17 @@
-public class ConstantEntry extends SymbolTableEntry{
-    //protected String type;
+/*
+ * This class is for ConstantEntries for Symbol Tables
+ */
+public class ConstantEntry extends SymbolTableEntry
+{
 
-    public ConstantEntry(String n, String t){
-        name = n;
-        type = t;
+    public ConstantEntry(String n, String t)
+    {
+        Name = n;
+        Type = t;
     }
 
-    public ConstantEntry (String n){
-        name = n;
-    }
-
-    public String toString(){
-        return "ConstantEntry: name=" + name + " type=" + type;
+    public String toString()
+    {
+        return "ConstantEntry: name=" + Name + " type=" + Type;
     }
 }

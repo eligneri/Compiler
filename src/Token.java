@@ -1,50 +1,62 @@
-public class Token{
-    private String key;
-    private String value;
-    private Integer intValue;
-    private Integer line;
+/*
+ * This class defines a Token, which is what the lexer turns a file into
+ */
+public class Token
+{
+    private String Key;
+    private String Value;
+    private Integer IntValue;
+    private Integer Line;
 
-    public Token(String x, String y, int z) {
-        key = x;
-        value = y;
-        line = z;
+    public Token(String x, String y, int z)
+    {
+        Key = x;
+        Value = y;
+        Line = z;
     }
 
-    public Token(String x, int y, int z) {
-        key = x;
-        intValue = y;
-        line = z;
+    public Token(String x, int y, int z)
+    {
+        Key = x;
+        IntValue = y;
+        Line = z;
     }
 
-    @Override public String toString(){
-        //if(value == null || intValue == null){
-        //    return "[\"" + key + "\", " + "null]";
-        //}
+    @Override
+    public String toString()
+    {
 
-        if(value != null) {
-            return "[\"" + key + "\", \"" + value + "\"]";
-        } else {
-            return "[\"" + key + "\", " + intValue + "]";
+        if (Value != null)
+        {
+            return "[\"" + Key + "\", \"" + Value + "\"]";
+        } else
+        {
+            return "[\"" + Key + "\", " + IntValue + "]";
         }
     }
 
-    public boolean equals(Token t){
-        return (this.key == t.key && this.value == t.value) || (this.key == t.key && this.intValue == t.intValue);
-    }
-
-    public String getSymbol(){
-        if(key == "IDENTIFIER" || key == "INTCONSTANT" || key == "REALCONSTANT"){
-            return value;
-        }else if(key == "ADDOP" || key == "MULOP" || key == "RELOP"){
-            return symbolLookUp();
-        }else{
-            return key;
+    //Returns the symbol of the toke
+    public String GetSymbol()
+    {
+        if (Key == "IDENTIFIER" || Key == "INTCONSTANT" || Key == "REALCONSTANT")
+        {
+            return Value;
+        } else if (Key == "ADDOP" || Key == "MULOP" || Key == "RELOP")
+        {
+            return SymbolLookUp();
+        } else
+        {
+            return Key;
         }
     }
 
-    private String symbolLookUp(){
-        if(key == "ADDOP"){
-            switch(intValue){
+    //finds what symbol corresponds to the int value
+    private String SymbolLookUp()
+    {
+        if (Key == "ADDOP")
+        {
+            switch (IntValue)
+            {
                 case 1:
                     return "+";
                 case 2:
@@ -52,8 +64,10 @@ public class Token{
                 case 3:
                     return "OR";
             }
-        } else if(key == "MULOP"){
-            switch(intValue){
+        } else if (Key == "MULOP")
+        {
+            switch (IntValue)
+            {
                 case 1:
                     return "*";
                 case 2:
@@ -65,8 +79,10 @@ public class Token{
                 case 5:
                     return "AND";
             }
-        } else {
-            switch(intValue){
+        } else
+        {
+            switch (IntValue)
+            {
                 case 1:
                     return "=";
                 case 2:
@@ -84,16 +100,22 @@ public class Token{
         return "Invalid Token Found";
     }
 
-    public String getOpCode() {
-        if (key == "ADDOP") {
-            switch (intValue) {
+    //finds opcodes that correspond to token values
+    public String GetOpCode()
+    {
+        if (Key == "ADDOP")
+        {
+            switch (IntValue)
+            {
                 case 1:
                     return "add";
                 case 2:
                     return "sub";
             }
-        } else if (key == "MULOP") {
-            switch (intValue) {
+        } else if (Key == "MULOP")
+        {
+            switch (IntValue)
+            {
                 case 1:
                     return "mul";
                 case 2:
@@ -103,8 +125,10 @@ public class Token{
                 case 4:
                     return "MOD";
             }
-        } else {
-            switch(intValue){
+        } else
+        {
+            switch (IntValue)
+            {
                 case 1:
                     return "beq";
                 case 2:
@@ -122,24 +146,33 @@ public class Token{
         return "Invalid Token Found";
     }
 
-    public String getKey() {
-        return key;
+    /*
+     * Getters
+     */
+    public String GetKey()
+    {
+        return Key;
     }
 
-    public Integer getLine() {
-        return line;
+    public Integer GetLine()
+    {
+        return Line;
     }
 
-    public String getValue() {
-        if(value != null){
-            return value;
-        } else {
-            return String.valueOf(intValue);
+    public String GetValue()
+    {
+        if (Value != null)
+        {
+            return Value;
+        } else
+        {
+            return String.valueOf(IntValue);
         }
     }
 
-    public int toInt(){
-        String value = this.getValue();
+    public int ToInt()
+    {
+        String value = this.GetValue();
         return Integer.parseInt(value);
     }
 

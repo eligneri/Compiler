@@ -1,54 +1,62 @@
 import java.util.Vector;
 import java.util.Enumeration;
 
+/*
+ * This class stores and creates TVI codes
+ */
 public class Quadruples {
     private Vector<String[]> Quadruple;
-    private int nextQuad;
+    private int NextQuad;
 
     public Quadruples()
     {
         Quadruple = new Vector<String[]>();
-        nextQuad = 0;
+        NextQuad = 0;
         String[] dummy_quadruple = new String[4];
         dummy_quadruple[0] = dummy_quadruple[1] = dummy_quadruple[2] = dummy_quadruple[3] = null;
-        Quadruple.add(nextQuad,dummy_quadruple);
-        nextQuad++;
+        Quadruple.add(NextQuad,dummy_quadruple);
+        NextQuad++;
     }
 
-    public String getField(int quadIndex, int field)
+    /*
+     * Getters and Setters
+     */
+    public String GetField(int quadindex, int field)
     {
-        return Quadruple.elementAt(quadIndex)[field];
+        return Quadruple.elementAt(quadindex)[field];
     }
 
-    public void setField(int quadIndex, int index, String field)
+    public void SetField(int quadindex, int index, String field)
     {
-        Quadruple.elementAt(quadIndex)[index] = field;
+        Quadruple.elementAt(quadindex)[index] = field;
     }
 
-    public int getNextQuad()
+    public int GetNextQuad()
     {
-        return nextQuad;
+        return NextQuad;
     }
 
-    public void incrementNextQuad()
+    public void IncrementNextQuad()
     {
-        nextQuad++;
+        NextQuad++;
     }
 
-    public String[] getQuad(int index)
+    public String[] GetQuad(int index)
     {
-        return (String []) Quadruple.elementAt(index);
+        return Quadruple.elementAt(index);
     }
 
-    public void addQuad(String[] quad)
+    //adds quad to quadlist
+    public void AddQuad(String[] quad)
     {
-        Quadruple.add(nextQuad, quad);
-        nextQuad++;
+        Quadruple.add(NextQuad, quad);
+        NextQuad++;
     }
 
-    public void print()
+    //prints the quad list, quad by quad
+    public void Print()
     {
-        int quadLabel = 1;
+        int quadlabel = 1;
         String separator;
 
         System.out.println("CODE");
@@ -59,7 +67,7 @@ public class Quadruples {
         while (e.hasMoreElements())
         {
             String[] quad = e.nextElement();
-            System.out.print(quadLabel + ":  " + quad[0]);
+            System.out.print(quadlabel + ":  " + quad[0]);
 
             if (quad[1] != null)
                 System.out.print(" " + quad[1]);
@@ -71,7 +79,7 @@ public class Quadruples {
                 System.out.print(", " + quad[3]);
 
             System.out.println();
-            quadLabel++;
+            quadlabel++;
 
         }
     }

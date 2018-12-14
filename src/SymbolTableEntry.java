@@ -1,83 +1,132 @@
 import java.util.List;
-public class SymbolTableEntry {
-    protected String name;
-    protected String type;
-    protected Integer address;
 
-    protected Boolean variable = false;
-    protected Boolean procedure = false;
-    protected Boolean function = false;
-    protected Boolean functionResult = false;
-    protected Boolean parameter = false;
-    protected Boolean array = false;
-    protected Boolean reserved = false;
+/*
+ * This class defines an entry to a symbol table. Extended by the different kinds of entries
+ */
+public class SymbolTableEntry
+{
+    protected String Name;
+    protected String Type;
+    protected Integer Address;
 
-    public boolean isVariable() {
-        return variable;
+    protected Boolean Variable = false;
+    protected Boolean Procedure = false;
+    protected Boolean Function = false;
+    protected Boolean FunctionResult = false;
+    protected Boolean Parameter = false;
+    protected Boolean Array = false;
+    protected Boolean Reserved = false;
+
+    public boolean IsProcedure()
+    {
+        return Procedure;
     }
 
-    public boolean isProcedure() {
-        return procedure;
+    /*
+     * Getters and Setters
+     */
+    public boolean GetVariable()
+    {
+        return Variable;
     }
 
-    public boolean isFunction() {
-        return function;
+    public boolean GetFunction()
+    {
+        return Function;
     }
 
-    public boolean isFunctionResult() {
-        return functionResult;
+    public boolean GetFunctionResult()
+    {
+        return FunctionResult;
     }
 
-    public boolean isParameter() {
-        return parameter;
+    public boolean GetParameter()
+    {
+        return Parameter;
     }
 
-    public boolean isArray() {
-        return array;
+    public boolean GetArray()
+    {
+        return Array;
     }
 
-    public boolean isReserved() {
-        return reserved;
+    public boolean GetReserved()
+    {
+        return Reserved;
     }
 
-    public String toString() {
-        return this.getClass().getSimpleName() + ": " + name;
+    public String toString()
+    {
+        return this.getClass().getSimpleName() + ": " + Name;
     }
 
-    public void setReserved(Boolean b) {
-        reserved = b;
+    public void SetReserved(Boolean b)
+    {
+        Reserved = b;
     }
 
-    public void setParameter(){parameter = true;}
-    public void setNumberOfParameters(int i){}
-    public Integer getNumberOfParameters(){return null;}
-    public void addParameter(SymbolTableEntry e){}
+    public void SetParameter()
+    {
+        Parameter = true;
+    }
 
-    public Integer getUpperBound(){return null;}
-    public Integer getLowerBound(){return null;}
+    public void SetNumberOfParameters(int i)
+    {
+    }
 
-    public List getParameterInfo(){return null;}
-    public String getType() {
-        if (type != null) {
-            return type;
-        } else {
+    public Integer GetNumberOfParameters()
+    {
+        return null;
+    }
+
+    public void AddParameter(SymbolTableEntry e)
+    {
+    }
+
+    public Integer GetUpperBound()
+    {
+        return null;
+    }
+
+    public Integer GetLowerBound()
+    {
+        return null;
+    }
+
+    public List GetParameterInfo()
+    {
+        return null;
+    }
+
+    public String GetType()
+    {
+        if (Type != null)
+        {
+            return Type;
+        } else
+        {
             return null;
         }
     }
 
-    public Integer getAddress() {
-        if (address != null) {
-            return address;
-        } else {
+    public Integer GetAddress()
+    {
+        if (Address != null)
+        {
+            return Address;
+        } else
+        {
             return null;
         }
     }
 
-    public String getName() {
-        return name;
+    public String GetName()
+    {
+        return Name;
     }
 
-    public VariableEntry getResult() {
+    public VariableEntry GetResult()
+    {
         return null;
     }
 

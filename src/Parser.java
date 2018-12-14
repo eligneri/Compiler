@@ -1,114 +1,165 @@
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.Stack;
 import java.io.File;
 
-public class Parser {
+/*
+ * Uses a lexer to run through a program and determine if it is a valid program in the language
+ */
+public class Parser
+{
     //Stack implemented as a linkedlist because it makes the printout look better. For some reason a Stack Object will print bottom up
-    private LinkedList<String> stack = new LinkedList<>();
-    private ParseTable table = new ParseTable();
-    private Grammar g;
-    private Lexer lex;
-    private boolean verbose = false;
-    private SemanticAction actions = new SemanticAction();
+    private LinkedList<String> Stack = new LinkedList<>();
+    private ParseTable Table = new ParseTable();
+    private Grammar G;
+    private Lexer Lex;
+    private boolean Verbose = false;
+    private SemanticAction Actions = new SemanticAction();
 
-    public Parser(File file){
-        lex = new Lexer(file);
-        g = new Grammar(new File("/Users/Ellis/IdeaProjects/Compiler/grammar.txt"));
-        stack.push("ENDOFFILE");
-        stack.push("<Goal>");
+    public Parser(File file, Grammar gram)
+    {
+        Lex = new Lexer(file);
+        G = gram;
+        Stack.push("ENDOFFILE");
+        Stack.push("<Goal>");
     }
 
     //Keeps track of how many steps the parse has taken
-    private int step = 1;
+    private int Step = 1;
 
-    public void parse(){
-        Token prevTok = null;
-        Token tok = lex.getNextToken();
-        String key = tok.getKey();
-        while(!stack.isEmpty()){
-            try {
-                if (verbose) {
-                    System.out.println("\n>>>  " + step + "  <<<\nStack ::==> " + dumpStack());
+    //Entry point to this class
+    public void Parse()
+    {
+        Token prevtok = null;
+        Token tok = Lex.GetNextToken();
+        String key = tok.GetKey();
+        while (!Stack.isEmpty())
+        {
+            try
+            {
+                if (Verbose)
+                {
+                    System.out.println("\n>>>  " + Step + "  <<<\nStack ::==> " + DumpStack());
                 }
-                String stac = stack.peek();
-                if (key.equals(stac.toUpperCase())) {
-                    if (verbose) {
+                String stac = Stack.peek();
+
+                //Case 1: The key equals what is expected, pop the stack off and get a new token
+
+                if (key.equals(stac.toUpperCase()))
+                {
+                    if (Verbose)
+                    {
                         System.out.println("Popped " + stac + " with token " + key + " *MATCH* {consume token}");
                     }
-                    stack.pop();
-                    prevTok = tok;
-                    tok = lex.getNextToken();
-                    key = tok.getKey();
-                } else if (isNonTerminal(stac)) {
-                    if (verbose) {
+                    Stack.pop();
+                    prevtok = tok;
+                    tok = Lex.GetNextToken();
+                    key = tok.GetKey();
+                }
+
+                //Case 2: Pop a nonterminal off the stack, push the production rules based on parse table
+
+                else if (IsNonTerminal(stac))
+                {
+                    if (Verbose)
+                    {
                         System.out.print("Popped " + stac + " with token " + key + " *PUSH* ");
                     }
-                    int i = getRule(key, stac);
-                    if(i == 999){
-                        throw new ParseError("Invalid Symbol. Unexpected " + tok.getSymbol() + " on line " +
-                                tok.getLine());
+                    int i = GetRule(key, stac);
+                    if (i == 999)
+                    {
+                        throw new ParseError("Invalid Symbol. Unexpected " + tok.GetSymbol() + " on line " +
+                                tok.GetLine());
 
                     }
-                    stack.pop();
-                    stackAdd(i);
-                } else if(isSemantic(stac)) {
-                    if(verbose){
+                    Stack.pop();
+                    StackAdd(i);
+                }
+
+                //Case 3: Pop a number corresponding to a semantic action, execute semaction action
+
+                else if (IsSemantic(stac))
+                {
+                    if (Verbose)
+                    {
                         System.out.println("Popped " + stac + " with token " + key + " *SEMANTIC ACTION* [" +
                                 stac.substring(1) + "]");
                     }
-                    actions.execute(stac.substring(1), prevTok);
-                    stack.pop();
-                } else if (!isNonTerminal(stac)) {
-                    throw new ParseError("Invalid Symbol. Expected " + stac + " on line " + tok.getLine() +
-                            " instead of " + tok.getSymbol());
+                    Actions.Execute(stac.substring(1), prevtok);
+                    Stack.pop();
                 }
-                step++;
-            } catch (ParseError e){
+
+                //Case 4: None of the above, throw an error.
+
+                else if (!IsNonTerminal(stac))
+                {
+                    throw new ParseError("Invalid Symbol. Expected " + stac + " on line " + tok.GetLine() +
+                            " instead of " + tok.GetSymbol());
+                }
+                Step++;
+            } catch (ParseError e)
+            {
                 System.err.println(e.getMessage());
                 System.exit(1);
             }
         }
 
         System.out.println("\nParse Accepted");
-        actions.intermediateCodePrint();
+        Actions.IntermediateCodePrint();
     }
 
-    private boolean isNonTerminal(String s){
+    //checks if string is a non terminal based on conventions of Backus-Naur
+    private boolean IsNonTerminal(String s)
+    {
         return s.charAt(0) == '<';
     }
 
-    private boolean isSemantic(String s){
+    //checks if string is a semantic action based on all actions starting with symbol '#'
+    private boolean IsSemantic(String s)
+    {
         return s.charAt(0) == '#';
     }
-    private int getRule(String key, String stac){
-        return table.getValue(key, stac);
+
+    //returns the production rule based on parse table
+    private int GetRule(String key, String stac)
+    {
+        return Table.GetValue(key, stac);
     }
 
-    private void stackAdd(int i){
-        if(i > 0){
-            String first = g.getProduction(i);
+    //adds production rules to the stack
+    private void StackAdd(int i)
+    {
+        if (i > 0)
+        {
+            String first = G.GetProduction(i);
             String[] productions = first.split("\\s+");
-            for(int j = productions.length - 1; j >= 0; j--) {
-                stack.push(productions[j]);
+            for (int j = productions.length - 1; j >= 0; j--)
+            {
+                Stack.push(productions[j]);
             }
-            if(verbose){
+            if (Verbose)
+            {
                 System.out.print(Arrays.toString(productions) + "\n");
             }
-        } else {
-            if(verbose){
+        } else
+        {
+            if (Verbose)
+            {
                 System.out.print(" *EPSILON*\n");
             }
         }
     }
 
-    private String dumpStack(){
-        return stack.toString();
+    //prints the stack
+    private String DumpStack()
+    {
+        return Stack.toString();
     }
 
-    public void setVerbose(boolean verbose) {
-        this.verbose = verbose;
-        actions.setVerbose(verbose);
+    //toggles debugging information
+    public void SetVerbose(boolean verbose)
+    {
+        this.Verbose = verbose;
+        Actions.SetVerbose(verbose);
     }
 
 }

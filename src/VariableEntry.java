@@ -1,30 +1,35 @@
+/*
+ * This class is for VariableEntries for Symbol Tables
+ */
 public class VariableEntry extends SymbolTableEntry {
-    //protected int address;
-    //protected String type;
 
     public VariableEntry (String n, int a, String t){
-        name = n;
-        address = a;
-        type = t;
-        variable = true;
+        Name = n;
+        Address = a;
+        Type = t;
+        Variable = true;
     }
 
     public VariableEntry(String n){
-        name = n;
-        variable = true;
+        Name = n;
+        Variable = true;
     }
 
-    public void setAddress(int address) {
-        this.address = address;
+    /*
+     * Setters
+     */
+    public void SetAddress(int address) {
+        this.Address = address;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void SetType(String type) {
+        this.Type = type;
     }
 
-    public void setResult(){functionResult = true;}
+    public void SetResult(){
+        FunctionResult = true;}
 
     public String toString(){
-        return "VariableEntry: name=" + name + " type=" + type + " address=" + address;
+        return "VariableEntry: name=" + Name + " type=" + Type + " address=" + Address;
     }
 }

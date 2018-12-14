@@ -1,28 +1,40 @@
 import java.util.Hashtable;
 import java.util.Enumeration;
 
-public class SymbolTable {
-    private Hashtable<String, SymbolTableEntry> table;
+/*
+ * This class creates a symbol table based on a Hashtable
+ */
+public class SymbolTable
+{
+    private Hashtable<String, SymbolTableEntry> Table;
 
-    public SymbolTable(int i){
-        table = new Hashtable(i);
+    public SymbolTable(int i)
+    {
+        Table = new Hashtable(i);
     }
 
-    public SymbolTableEntry lookup(String e){
-        return table.get(e);
+    //lookup a value in the hashtable
+    public SymbolTableEntry Lookup(String e)
+    {
+        return Table.get(e);
     }
 
-    public void insert(SymbolTableEntry e){
-        table.put(e.name, e);
+    //put a value in the hashtable
+    public void Insert(SymbolTableEntry e)
+    {
+        Table.put(e.Name, e);
     }
 
-    public int size(){
-        return table.size();
+    public int Size()
+    {
+        return Table.size();
     }
 
-    public void dumpTable() {
-        Enumeration<SymbolTableEntry> e = table.elements();
-        while(e.hasMoreElements()){
+    public void DumpTable()
+    {
+        Enumeration<SymbolTableEntry> e = Table.elements();
+        while (e.hasMoreElements())
+        {
             System.out.println(e.nextElement());
         }
     }

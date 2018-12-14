@@ -1,47 +1,58 @@
 import java.util.LinkedList;
 import java.util.List;
 
-public class ProcedureEntry extends SymbolTableEntry {
-    protected int numberofParameters;
-    protected List parameterInfo;
+/*
+ * This class is for ProcedureEntries for Symbol Tables
+ */
+public class ProcedureEntry extends SymbolTableEntry
+{
+    protected int NumberOfParameters;
+    protected List ParameterInfo;
 
-    public ProcedureEntry(String n, int p, List l){
-        name = n;
-        numberofParameters =p;
-        parameterInfo = l;
-        procedure = true;
+
+    public ProcedureEntry(String n, int p)
+    {
+        Name = n;
+        NumberOfParameters = p;
+        Procedure = true;
+        ParameterInfo = new LinkedList();
     }
 
-    public ProcedureEntry(String n, int p){
-        name = n;
-        numberofParameters = p;
-        procedure = true;
-        parameterInfo = new LinkedList();
+    public ProcedureEntry(String n)
+    {
+        Name = n;
+        ParameterInfo = new LinkedList();
+        Procedure = true;
     }
 
-    public ProcedureEntry(String n){
-        name = n;
-        parameterInfo = new LinkedList();
-        procedure = true;
+    public boolean IsProcedure()
+    {
+        return true;
     }
 
-    public boolean isProcedure(){return true;}
-
-
-
-    public void addParameter(SymbolTableEntry e){
-        parameterInfo.add(e);
+    //Adds a parameter to parameter info
+    public void AddParameter(SymbolTableEntry e)
+    {
+        ParameterInfo.add(e);
     }
 
-    public void setNumberOfParameters(int i){
-        numberofParameters = i;
+    /*
+     * Getters and Setters
+     */
+    public void SetNumberOfParameters(int i)
+    {
+        NumberOfParameters = i;
     }
 
 
-    public Integer getNumberOfParameters(){return numberofParameters;}
+    public Integer GetNumberOfParameters()
+    {
+        return NumberOfParameters;
+    }
 
-    public String toString(){
-        return "ProcedureEntry: name=" + name + " numberofparameters=" + numberofParameters + " parameterinfo=" +
-                parameterInfo;
+    public String toString()
+    {
+        return "ProcedureEntry: name=" + Name + " numberofparameters=" + NumberOfParameters + " parameterinfo=" +
+                ParameterInfo;
     }
 }

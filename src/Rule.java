@@ -1,21 +1,29 @@
-public class Rule {
-    private int line;
-    private String production;
+/*
+ * This class is for production rules. Each rule corresponds to one line of a Backus-Naur grammar
+ */
+public class Rule
+{
+    private int Line;
+    private String Production;
 
     @Override
-    public String toString() {
-        return "line='" + line + '\'' +
-                ", production='" + production + '\'' +
+    public String toString()
+    {
+        return "line='" + Line + '\'' +
+                ", production='" + Production + '\'' +
                 "\n";
     }
 
-    public Rule(String i, String j){
-        line = Integer.parseInt(i);
-        production = j.trim();
+    public Rule(String i, String j)
+    {
+        Line = Integer.parseInt(i);
+        Production = j.trim();
     }
 
-    public String getProduction() {
-        return production;
+    //Getter
+    public String GetProduction()
+    {
+        return Production;
     }
 
 }

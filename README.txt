@@ -2,13 +2,10 @@ CS331 Compilers Fall 2018
 Vassar College
 Ellis Igneri
 
-To test the lexer, uncomment and run the first section of the main method in the compiler test class. This will analyze the test file Lexer_Test.txt, which I based off of example program 3. Since I have not yet included error recovery, there are a few things you can modify in the test file that will trigger errors that halt the program, these are indicated in comments.
+To test semantic actions, run main method in Compiler.
 
-The parser is currently being tested as part of testing semantic actions.
-
-To test the symbol table, uncomment and run the third section of the main method in CompilerTest. This will load 6 values into the table and then dump the stack.
-
-To test semantic actions, run main method in CompilerTest.
+12/13/18
+-Code Cleanup
 
 12/8/18
 -Added semantic actions for local methods

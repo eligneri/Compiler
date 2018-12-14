@@ -1,53 +1,65 @@
-import javax.lang.model.element.VariableElement;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FunctionEntry extends SymbolTableEntry {
+/*
+ * This class is for FunctionEntries for Symbol Tables
+ */
+public class FunctionEntry extends SymbolTableEntry
+{
     protected int numberOfParameters;
     protected List parameterInfo;
     protected VariableEntry result;
 
-    public FunctionEntry(String n, int p, List l, VariableEntry r){
-        name = n;
-        numberOfParameters = p;
-        parameterInfo = l;
+    public FunctionEntry(String n, VariableEntry r)
+    {
+        Name = n;
         result = r;
-        function = true;
-    }
-
-    public FunctionEntry(String n, VariableEntry r){
-        name = n;
-        result = r;
-        function = true;
+        Function = true;
         parameterInfo = new LinkedList();
     }
 
-    public void setType(String s){
-        type = s;
-    }
-
-    public void setResultType(String s){
-        result.setType(s);
-    }
-
-    public void setNumberOfParameters(int i){
-        numberOfParameters = i;
-    }
-
-    public Integer getNumberOfParameters(){return numberOfParameters;}
-
-    public List getParameterInfo(){return parameterInfo;}
-
-    public void addParameter(SymbolTableEntry e){
+    //Adds a parameter to the parameter list
+    public void AddParameter(SymbolTableEntry e)
+    {
         parameterInfo.add(e);
     }
 
-    public VariableEntry getResult(){
+    /*
+     * Getters and Setters
+     */
+    public void SetType(String s)
+    {
+        Type = s;
+    }
+
+    public void setResultType(String s)
+    {
+        result.SetType(s);
+    }
+
+    public void SetNumberOfParameters(int i)
+    {
+        numberOfParameters = i;
+    }
+
+    public Integer GetNumberOfParameters()
+    {
+        return numberOfParameters;
+    }
+
+    public List GetParameterInfo()
+    {
+        return parameterInfo;
+    }
+
+    public VariableEntry GetResult()
+    {
         return result;
     }
 
-    public String toString(){
-        return "FunctionEntry: name=" + name + " numberofparameters=" + numberOfParameters + " parameterinfo=" +
+    public String toString()
+    {
+        return "FunctionEntry: name=" + Name + " numberofparameters=" + numberOfParameters + " parameterinfo=" +
                 parameterInfo + " result=" + result;
     }
 }

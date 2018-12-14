@@ -1,44 +1,63 @@
-public class ArrayEntry extends SymbolTableEntry {
-    //protected int address;
-    //protected String type;
+/*
+ * This class is for ArrayEntries for Symbol Tables
+ */
+public class ArrayEntry extends SymbolTableEntry
+{
     protected int upperBound;
     protected int lowerBound;
 
-    public ArrayEntry(String n, int a, String t, int u, int l){
-        name = n;
-        address = a;
-        type = t;
+    public ArrayEntry(String n, int a, String t, int u, int l)
+    {
+        Name = n;
+        Address = a;
+        Type = t;
         upperBound = u;
         lowerBound = l;
-        array = true;
+        Array = true;
     }
 
-    public ArrayEntry(String n){
-        name = n;
-        array = true;
+    public ArrayEntry(String n)
+    {
+        Name = n;
+        Array = true;
     }
 
-    public void setAddress(int address) {
-        this.address = address;
+    /*
+     * GETTERS AND SETTERS
+     */
+    public void SetAddress(int address)
+    {
+        this.Address = address;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void SetType(String type)
+    {
+        this.Type = type;
     }
 
-    public void setUpperBound(int upperBound) {
+    public void SetUpperBound(int upperBound)
+    {
         this.upperBound = upperBound;
     }
 
-    public void setLowerBound(int lowerBound) {
+    public void SetLowerBound(int lowerBound)
+    {
         this.lowerBound = lowerBound;
     }
 
-    public Integer getUpperBound(){return upperBound;}
-    public Integer getLowerBound(){return lowerBound;}
+    public Integer GetUpperBound()
+    {
+        return upperBound;
+    }
 
-    public String toString(){
-        return "ArrayEntry: name=" + name + " type=" + type + " upperbound=" + upperBound + " lowerbound=" + lowerBound
-                + " address=" + address;
+    public Integer GetLowerBound()
+    {
+        return lowerBound;
+    }
+
+    public String toString()
+    {
+        return "ArrayEntry: name=" + Name + " type=" + Type + " upperbound=" + upperBound + " lowerbound=" + lowerBound
+                + " address=" + Address;
     }
 }
